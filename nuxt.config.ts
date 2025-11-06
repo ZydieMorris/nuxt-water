@@ -20,4 +20,7 @@ export default defineNuxtConfig({
     prefix: "",
     componentDir: "./app/components/ui",
   },
+    runtimeConfig : {
+    databaseUrl : process.env.DATABASE_URL
+  }
 });
