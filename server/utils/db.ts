@@ -1,10 +1,11 @@
+import mysql from "mysql2";
 import { drizzle } from "drizzle-orm/mysql2";
 
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+});
 
-const runtimeConfig = useRuntimeConfig();
-
-const db = drizzle(runtimeConfig.databaseUrl);
-
-export {
-    db
-}
+export const db = drizzle(connection);

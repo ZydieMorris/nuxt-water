@@ -3,22 +3,26 @@ const name = ref('')
 const email = ref('')
 const password = ref('')
 
-function add() {
-  $fetch('/api/users', {
-    method: 'POST',
-    body: {
-      name: name.value,
-      email: email.value,
-      password: password.value
-    }
-  })
+async function add() {
+  try {
+    await $fetch('/api/users', {
+      method: 'POST',
+      body: {
+        name: name.value,
+        email: email.value,
+        password: password.value
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 </script>
 <template>
-   <div class="p-20">
+  <div class="p-20">
     <NuxtLink to="/dashboard"><Button>Dashboard</Button></NuxtLink>
-   </div>
+  </div>
 
   <div class=" flex justify-center items-center mt-50">
     <div class="space-y-5">
@@ -31,7 +35,7 @@ function add() {
       <Button @click="add">Add</Button>
     </div>
 
-   
+
 
 
 

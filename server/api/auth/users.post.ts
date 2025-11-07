@@ -1,4 +1,4 @@
-import { users } from "../database/schemas"
+import { users } from "../../database/schemas"
 
 export default defineEventHandler(async(event) =>{
 
