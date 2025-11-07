@@ -1,25 +1,24 @@
-import { hash } from "bcrypt-ts"
-import { drizzle } from "drizzle-orm/singlestore/driver"
-import { register } from "~~/server/database/schemas"
+import { hash } from "bcrypt-ts";
+import { drizzle } from "drizzle-orm/singlestore/driver";
+import { register } from "~~/server/database/schemas";
+import * as z from "zod/v4";
 
-export default defineEventHandler(async(event) =>{
+const registerSchema = z.object({
+  username: z.string().min(5),
+  password: z.string().min(8),
+});
 
-    
-    const body = await readBody(event)
-    const {username, password}= body
+export default defineEventHandler(async (event) => {
+  const body = await readValidatedBody(event, registerSchema.parse);
+  const { username, password } = body;
 
-   if(!(username && password)){
-    return {message : "username and password is required"}
-   }
-    
-const hashed = await hash(password, 10)
+  const hashed = await hash(password, 10);
 
-
-   await db.insert(register).values({
+  await db.insert(register).values({
     username,
-    password : hashed
-   });
+    password: hashed,
+  });
 
-    console.log(body)
-    return (body)
-})
+  console.log(body);
+  return body;
+});
