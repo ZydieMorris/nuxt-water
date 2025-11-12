@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxt/test-utils",
     "shadcn-nuxt",
+    "nuxt-auth-utils"
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {

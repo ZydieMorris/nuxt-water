@@ -12,7 +12,11 @@ async function add() {
         email: email.value,
         password: password.value
       }
-    })
+
+      
+    });
+
+    await navigateTo ('/dashboard')
   } catch (error) {
     console.log(error)
   }
@@ -32,7 +36,11 @@ async function add() {
       <Input v-model="email" class="w-100" />
       <Label>Password</Label>
       <Input v-model="password" class="w-100" />
-      <Button @click="add">Add</Button>
+      <div class="flex justify-between">
+       <Button @click="add">Login</Button>
+      <NuxtLink to= "/register"><Button >Register</Button></NuxtLink>
+      </div>
+     
     </div>
 
 

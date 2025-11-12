@@ -1,38 +1,43 @@
-import { compare, hash } from "bcrypt-ts"
 import { eq } from "drizzle-orm"
-import { register } from "~~/server/database/schemas"
-import * as z from "zod/v4"
+import { email } from "zod/v4";
+import {  users } from "~~/server/database/schemas"
 
+import { z } from "zod/v4";
 
 const loginSchema = z.object({
-    username : z.string().min(5),
-    password : z.string().min(8)
+    email: email(),
+    password: z.string().min(6).max(100),
 })
 
 
 
-export default defineEventHandler(async(event) =>{
 
+export default defineEventHandler(async(event) =>{
     
     const body = await readValidatedBody(event, loginSchema.parse)
-    const {username, password}= body
  
 
     //check if user exist
-    const user = await db.select().from(register).where(eq(register.username, username)).limit(1);
+    const user = await db.select().from(users).where(eq(users.email, body.email)).limit(1);
 
     if(user.length ===0){
-        throw createError({statusCode: 400, message: "Invalid Credetials"})
+        throw createError({statusCode: 400, statusMessage: "Invalid Credetials"})
     }
 
     //check is password is correct
     const foundUser = user[0];
 
-    const isPasswordCorrect =await compare(password, foundUser.password)
+    const isPasswordCorrect =await verifyPassword(foundUser.password,body.password)
 
     if(!isPasswordCorrect){
-        throw createError({statusCode: 401, message: "Invalid Credetials"})
+        throw createError({statusCode: 401, statusMessage: "Invalid Credetials"})
     }
+
+
+    // set the user session
+    await setUserSession(event,{
+        user : foundUser
+    })
 
     return {
         message : "Login Successful",
